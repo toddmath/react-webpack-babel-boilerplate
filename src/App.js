@@ -1,7 +1,7 @@
 import React, { memo } from "react"
-import _ from "lodash"
-import { isObject } from "lodash/isObject"
-import { memoize } from "lodash/memoize"
+import _ from "lodash-es"
+import { isObject } from "lodash-es/isObject"
+import { memoize } from "lodash-es/memoize"
 
 import Todd from "./Icons/Todd.svg"
 import styles from "./style.scss"
