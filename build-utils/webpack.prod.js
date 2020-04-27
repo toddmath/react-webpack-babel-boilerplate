@@ -9,6 +9,9 @@ module.exports = {
   mode: "production",
   devtool: "source-map",
   optimization: {
+    splitChunks: {
+      chunks: "all",
+    },
     minimize: true,
     minimizer: [
       new TerserJSPlugin({
