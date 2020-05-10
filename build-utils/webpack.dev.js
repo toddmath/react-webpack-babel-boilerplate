@@ -1,4 +1,5 @@
 const Dotenv = require("dotenv-webpack")
+const BrowserSyncPlugin = require("browser-sync-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
 module.exports = {
@@ -8,6 +9,18 @@ module.exports = {
     usedExports: true,
   },
   plugins: [
+    new BrowserSyncPlugin(
+      {
+        // browsersync options
+        host: "localhost",
+        port: 7777,
+        proxy: "http://localhost:8080/",
+      },
+      {
+        // plugin options
+        reload: false,
+      }
+    ),
     new Dotenv({
       path: "./.env.development",
     }),
