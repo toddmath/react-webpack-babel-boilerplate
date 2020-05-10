@@ -9,6 +9,11 @@ const { supportedLocales } = require("./locales")
 
 module.exports = {
   entry: "./src/index.js",
+  /** Testing things for v5 upgrade @see {@link https://webpack.js.org/migrate/5/} */
+  node: {
+    Buffer: false,
+    process: false,
+  },
   module: {
     // Make missing exports an error instead of warning
     strictExportPresence: true,
