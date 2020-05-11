@@ -4,7 +4,7 @@ import { isObject } from "lodash-es/isObject"
 import { memoize } from "lodash-es/memoize"
 
 import Todd from "./Icons/Todd.svg"
-import styles from "./style.scss"
+import styles from "./app.scss"
 
 const App = ({ title }) => (
   <div className='app__component'>

@@ -7,6 +7,11 @@ module.exports = {
   devtool: "eval-source-map",
   optimization: {
     usedExports: true,
+    // namedModules: true,
+    // namedChunks: true,
+  },
+  performance: {
+    hints: "warning",
   },
   plugins: [
     new BrowserSyncPlugin(

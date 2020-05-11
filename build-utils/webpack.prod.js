@@ -10,16 +10,21 @@ module.exports = {
   devtool: "source-map",
   optimization: {
     splitChunks: {
-      chunks: "async",
+      chunks: "all",
       name: false,
     },
+    removeAvailableModules: true,
     minimize: true,
     minimizer: [
       new TerserJSPlugin({
         test: /\.m?(js|jsx)(\?.*)?$/i,
+        sourceMap: true,
       }),
       new OptimizeCSSAssetsPlugin({}),
     ],
+  },
+  performance: {
+    hints: "error",
   },
   plugins: [
     new Dotenv({

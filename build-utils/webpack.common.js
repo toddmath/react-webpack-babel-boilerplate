@@ -8,11 +8,18 @@ const DuplicatePackageCheckerPlugin = require("duplicate-package-checker-webpack
 const { supportedLocales } = require("./locales")
 
 module.exports = {
+  mode: "none",
   entry: "./src/index.js",
   /** Testing things for v5 upgrade @see {@link https://webpack.js.org/migrate/5/} */
   node: {
     Buffer: false,
     process: false,
+  },
+  output: {
+    path: path.resolve(__dirname, "../", "dist"),
+    publicPath: "/",
+    filename: "bundle.js",
+    chunkFilename: "[chunkhash].js",
   },
   module: {
     // Make missing exports an error instead of warning
@@ -57,7 +64,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(gif|png|jpe?g|svg)$/i,
+        test: /\.(gif|png|jpe?g|svg|webp)$/i,
         use: [
           "file-loader",
           {
@@ -91,7 +98,23 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ["*", ".js", ".jsx"],
+    extensions: [
+      ".js",
+      ".jsx",
+      ".json",
+      ".png",
+      ".jpeg",
+      ".jpg",
+      ".webp",
+      ".gif",
+      ".svg",
+      ".scss",
+      ".css",
+    ],
+  },
+  performance: {
+    maxEntrypointSize: 250000,
+    maxAssetSize: 175000,
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -109,13 +132,16 @@ module.exports = {
       verbose: true,
     }),
   ],
-  output: {
-    path: path.resolve(__dirname, "../", "dist"),
-    publicPath: "/",
-    filename: "bundle.js",
-  },
   devServer: {
+    // * if having issues with routes @see http://localhost:8080/webpack-dev-server
     contentBase: "./dist",
+    compress: true,
+    port: 8080,
+    bonjour: true,
+    hot: true,
+  },
+  stats: {
+    colors: true,
   },
 }
 

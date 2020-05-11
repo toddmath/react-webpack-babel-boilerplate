@@ -8,4 +8,7 @@ module.exports = {
       openAnalyzer: false,
     }),
   ],
+  devServer: {
+    openPage: ["/report.html", "/"],
+  },
 }

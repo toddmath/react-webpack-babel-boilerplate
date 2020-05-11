@@ -11,6 +11,8 @@
   ],
   "scripts": {
     "start": "webpack-dev-server --config build-utils/webpack.config.js --env.env=dev --watch",
+    "start:chrome": "webpack-dev-server --config build-utils/webpack.config.js --env.env=dev --env.addon=chrome --watch",
+    "start:firefox": "webpack-dev-server --config build-utils/webpack.config.js --env.env=dev --env.addon=firefox --watch",
     "build": "webpack --config build-utils/webpack.config.js --env.env=prod",
     "build:analyze": "yarn build --env.addon=bundleanalyze --env.addon=bundlevisualizer",
     "build:stats": "webpack --config build-utils/webpack.config.js --env.env=prod --profile --json > stats.json",
