@@ -1,17 +1,32 @@
-const Dotenv = require("dotenv-webpack")
+const { DefinePlugin } = require('webpack')
+const Dotenv = require('dotenv-webpack')
 // const ImageminPlugin = require("imagemin-webpack-plugin")
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const CompressionPlugin = require("compression-webpack-plugin")
-const TerserJSPlugin = require("terser-webpack-plugin")
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CompressionPlugin = require('compression-webpack-plugin')
+const TerserJSPlugin = require('terser-webpack-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+
+const GLOBALS = {
+  'process.env.NODE_ENV': JSON.stringify('production'),
+  __DEV__: false,
+}
 
 module.exports = {
-  mode: "production",
-  devtool: "source-map",
+  mode: 'production',
+  devtool: 'source-map',
   optimization: {
+    moduleIds: 'hashed',
+    runtimeChunk: 'single',
     splitChunks: {
-      chunks: "all",
+      chunks: 'all',
       name: false,
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
     },
     removeAvailableModules: true,
     minimize: true,
@@ -24,19 +39,20 @@ module.exports = {
     ],
   },
   performance: {
-    hints: "error",
+    hints: 'error',
   },
   plugins: [
+    new DefinePlugin(GLOBALS),
     new Dotenv({
-      path: "./.env.production",
+      path: './.env.production',
     }),
     new MiniCssExtractPlugin({
-      filename: "[name].[hash].css",
-      chunkFilename: "[id].[hash].css",
+      filename: '[name].[contenthash].css',
+      chunkFilename: '[id].[contenthash].css',
     }),
     new CompressionPlugin({
-      filename: "[path].br[query]",
-      algorithm: "brotliCompress",
+      filename: '[path].br[query]',
+      algorithm: 'brotliCompress',
       test: /\.(js|css|html|svg)$/,
       compressionOptions: { level: 11 },
       threshold: 10240,
@@ -47,7 +63,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(sa|sc|c)ss$/,
+        test: /\.((c|sa|sc)ss)$/i,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
@@ -55,10 +71,40 @@ module.exports = {
               hmr: false,
             },
           },
-          "css-loader",
-          "sass-loader",
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              modules: { auto: true },
+              sourceMap: true,
+              esModule: true
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              config: {
+                path: '../'
+              },
+              plugins: [
+                require('cssnano')(),
+                require('autoprefixer')()
+              ],
+              sourceMap: true,
+            },
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
         ],
       },
     ],
+  },
+  output: {
+    filename: '[name].[contenthash].js',
   },
 }

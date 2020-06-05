@@ -1,25 +1,46 @@
-const path = require("path")
-const { ContextReplacementPlugin } = require("webpack")
-const LodashModuleReplacementPlugin = require("lodash-webpack-plugin")
-const { CleanWebpackPlugin } = require("clean-webpack-plugin")
-const HtmlWebpackPlugin = require("html-webpack-plugin")
-const DuplicatePackageCheckerPlugin = require("duplicate-package-checker-webpack-plugin")
+const path = require('path')
+const { ContextReplacementPlugin } = require('webpack')
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin')
 
-const { supportedLocales } = require("./locales")
+const { supportedLocales } = require('./locales')
+
+/** Parses and adds viewBox to all imported svg components. */
+function handleSvgViewBox(
+  { template },
+  opts,
+  { imports, componentName, props, jsx, exports }
+) {
+  return template.ast`
+    ${imports}
+    import useWithViewbox from '../hooks/useWithViewBox';
+
+    export default function ${componentName}(${props}) {
+      const ref = React.useRef();
+      useWithViewbox(ref);
+      props = { ...props, ref };
+
+      return ${jsx};
+    };
+  `
+}
 
 module.exports = {
-  mode: "none",
-  entry: "./src/index.js",
-  /** Testing things for v5 upgrade @see {@link https://webpack.js.org/migrate/5/} */
+  mode: 'none',
+  target: 'web',
+  entry: './src/index.js',
   node: {
+    /** Testing things for v5 upgrade @see {@link https://webpack.js.org/migrate/5/} */
     Buffer: false,
     process: false,
   },
   output: {
-    path: path.resolve(__dirname, "../", "dist"),
-    publicPath: "/",
-    filename: "bundle.js",
-    chunkFilename: "[chunkhash].js",
+    path: path.resolve(__dirname, '../', 'dist'),
+    publicPath: '/',
+    filename: 'bundle.js',
+    chunkFilename: '[chunkhash].js',
   },
   module: {
     // Make missing exports an error instead of warning
@@ -28,11 +49,48 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
+        include: path.resolve(__dirname, '../', 'src'),
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
-            plugins: ["lodash"],
-            presets: ["@babel/preset-env", "@babel/preset-react"],
+            plugins: [
+              'babel-plugin-macros',
+              ['@babel/plugin-proposal-class-properties', { loose: true }],
+              '@babel/plugin-proposal-numeric-separator',
+              [
+                '@babel/plugin-transform-runtime',
+                {
+                  corejs: false,
+                  helpers: false,
+                  regenerator: true,
+                  useESModules: true,
+                },
+              ],
+              '@babel/plugin-proposal-optional-chaining',
+              '@babel/plugin-proposal-nullish-coalescing-operator',
+              '@babel/plugin-syntax-dynamic-import',
+              '@loadable/babel-plugin',
+              'lodash',
+            ],
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  modules: false,
+                  useBuiltIns: 'entry',
+                  corejs: 3,
+                  targets: { esmodules: true },
+                  exclude: ['transform-typeof-symbol'],
+                },
+              ],
+              [
+                '@babel/preset-react',
+                {
+                  development: true,
+                  useBuiltIns: true,
+                },
+              ],
+            ],
           },
         },
       },
@@ -40,25 +98,9 @@ module.exports = {
         test: /\.svg$/i,
         use: [
           {
-            loader: "@svgr/webpack",
+            loader: '@svgr/webpack',
             options: {
-              template: (
-                { template },
-                opts,
-                { imports, componentName, props, jsx, exports }
-              ) => template.ast`
-                ${imports}
-                import useWithViewbox from '../hooks/useWithViewBox';
-
-                const ${componentName} = (${props}) => {
-                  const ref = React.useRef();
-                  useWithViewbox(ref);
-                  props = { ...props, ref };
-
-                  return ${jsx};
-                };
-                export default ${componentName};
-              `,
+              template: handleSvgViewBox,
             },
           },
         ],
@@ -66,9 +108,9 @@ module.exports = {
       {
         test: /\.(gif|png|jpe?g|svg|webp)$/i,
         use: [
-          "file-loader",
+          'file-loader',
           {
-            loader: "image-webpack-loader",
+            loader: 'image-webpack-loader',
             options: {
               mozjpeg: {
                 progressive: true,
@@ -86,31 +128,61 @@ module.exports = {
               },
             },
           },
-          "url-loader",
+          'url-loader',
         ],
       },
       {
-        test: /\.(woff|woff2)$/,
-        use: {
-          loader: "url-loader",
-        },
+        test: /\.eot(\?v=\d+.\d+.\d+)?$/,
+        use: ['file-loader'],
+      },
+      {
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 1e4,
+              mimetype: 'application/font-woff',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.[ot]tf(\?v=\d+.\d+.\d+)?$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 1e4,
+              mimetype: 'application/octet-stream',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.txt$/i,
+        use: 'raw-loader',
       },
     ],
   },
   resolve: {
     extensions: [
-      ".js",
-      ".jsx",
-      ".json",
-      ".png",
-      ".jpeg",
-      ".jpg",
-      ".webp",
-      ".gif",
-      ".svg",
-      ".scss",
-      ".css",
+      '.js',
+      '.jsx',
+      '.json',
+      '.png',
+      '.jpeg',
+      '.jpg',
+      '.webp',
+      '.gif',
+      '.svg',
+      '.scss',
+      '.css',
     ],
+    alias: {
+      '~hooks': path.resolve(__dirname, '../', 'src/', 'hooks/'),
+      '~components': path.resolve(__dirname, '../', 'src/', 'components/'),
+    },
   },
   performance: {
     maxEntrypointSize: 250000,
@@ -119,22 +191,23 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      title: "Hello React-Boilerplate with Webpack and Babel World!!",
-      template: "./src/index.html",
+      title: 'Hello React-Boilerplate with Webpack and Babel World!!',
+      template: './build-utils/template.html',
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+      },
+      inject: true,
     }),
     new LodashModuleReplacementPlugin(),
     new ContextReplacementPlugin(
       /date\-fns[\/\\]/,
-      new RegExp(`[/\\\\\](${supportedLocales.join("|")})[/\\\\\]`)
+      new RegExp(`[/\\\\\](${supportedLocales.join('|')})[/\\\\\]`)
     ),
-    new DuplicatePackageCheckerPlugin({
-      // Also show module that is requiring each duplicate package (default: false)
-      verbose: true,
-    }),
   ],
   devServer: {
     // * if having issues with routes @see http://localhost:8080/webpack-dev-server
-    contentBase: "./dist",
+    contentBase: './dist',
     compress: true,
     port: 8080,
     bonjour: true,
