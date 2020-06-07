@@ -1,0 +1,46 @@
+/* ----------------------------------------------------------------------
+  ---- PostCSS normalize
+---------------------------------------------------------------------- */
+@import-normalize;
+
+/* ----------------------------------------------------------------------
+  ---- TailwindCSS
+---------------------------------------------------------------------- */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* ----------------------------------------------------------------------
+  ---- Global Styles
+---------------------------------------------------------------------- */
+html {
+  box-sizing: border-box;
+  @apply subpixel-antialiased;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  padding: 0;
+  margin: 0;
+  line-height: 1.5;
+  @apply bg-gray-200;
+}
+
+.title {
+  margin: 0;
+}
+
+svg,
+g,
+path {
+  fill: currentColor !important;
+  box-sizing: border-box;
+}

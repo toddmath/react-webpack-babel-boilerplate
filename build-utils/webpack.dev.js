@@ -37,7 +37,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.((c|sa|sc)ss)$/i,
+        test: /\.(css)$/i,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
@@ -51,7 +51,7 @@ module.exports = {
               importLoaders: 1,
               modules: { auto: true },
               sourceMap: true,
-              esModule: true
+              esModule: true,
             },
           },
           {
@@ -59,17 +59,18 @@ module.exports = {
             options: {
               ident: 'postcss',
               config: {
-                path: '../'
+                path: '../',
               },
               plugins: [
-                require('autoprefixer')()
+                require('postcss-import')(),
+                require('postcss-normalize')(),
+                require('tailwindcss')(),
+                require('postcss-extend')(),
+                require('postcss-nested-ancestors')(),
+                require('postcss-nested-props')(),
+                require('postcss-nested')(),
+                require('postcss-preset-env')(),
               ],
-              sourceMap: true,
-            },
-          },
-          {
-            loader: 'sass-loader',
-            options: {
               sourceMap: true,
             },
           },
@@ -78,3 +79,52 @@ module.exports = {
     ],
   },
 }
+
+/*
+{
+  test: /\.((c|sa|sc)ss)$/i,
+  use: [
+    {
+      loader: MiniCssExtractPlugin.loader,
+      options: {
+        hmr: true,
+      },
+    },
+    {
+      loader: 'css-loader',
+      options: {
+        importLoaders: 1,
+        modules: { auto: true },
+        sourceMap: true,
+        esModule: true,
+      },
+    },
+    {
+      loader: 'postcss-loader',
+      options: {
+        ident: 'postcss',
+        config: {
+          path: '../',
+        },
+        plugins: [
+          require('postcss-import')(),
+          require('postcss-normalize')(),
+          require('tailwindcss')(),
+          require('postcss-extend')(),
+          require('postcss-nested-ancestors')(),
+          require('postcss-nested-props')(),
+          require('postcss-nested')(),
+          require('postcss-preset-env')(),
+        ],
+        sourceMap: true,
+      },
+    },
+    {
+      loader: 'sass-loader',
+      options: {
+        sourceMap: true,
+      },
+    },
+  ],
+  },
+*/

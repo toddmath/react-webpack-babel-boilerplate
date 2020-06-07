@@ -6,18 +6,20 @@ import { memoize } from 'lodash-es/memoize'
 
 import { Section } from '~components'
 import Todd from './Icons/Todd.svg'
-import styles from './app.scss'
+import styles from './app.css'
 
-const App = ({ title }) => (
-  <div className='app__component'>
-    <div className='todd__container'>
-      <Todd className='todd' />
+function App({ title }) {
+  return (
+    <div className='app__component'>
+      <div className='todd__container'>
+        <Todd className='todd' />
+      </div>
+      <h1 className='text-green-500 text-xl'>App Component</h1>
+      <Section>
+        <h2 className='title'>{title}</h2>
+      </Section>
     </div>
-    <h1>App Component</h1>
-    <Section>
-      <div className='title'>{title}</div>
-    </Section>
-  </div>
-)
+  )
+}
 
 export default memo(App)

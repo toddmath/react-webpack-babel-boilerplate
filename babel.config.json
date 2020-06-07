@@ -8,7 +8,7 @@
             "modules": false,
             "useBuiltIns": "entry",
             "corejs": 3,
-            "targets": { "esmodules": true, "bugfixes": true },
+            "targets": { "esmodules": true },
             "exclude": ["transform-typeof-symbol"]
           }
         ],
@@ -48,7 +48,7 @@
             "modules": false,
             "useBuiltIns": "entry",
             "corejs": 3,
-            "targets": { "esmodules": true, "bugfixes": true },
+            "targets": { "esmodules": true },
             "exclude": ["transform-typeof-symbol"]
           }
         ],
