@@ -2,6 +2,6 @@
   @apply w-full;
 
   button {
-    @apply bg-purple-500 text-white border-none px-3 py-2 text-sm uppercase rounded;
+    @apply bg-purple-500 text-white border-none p-3 text-sm uppercase rounded;
   }
 }

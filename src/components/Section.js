@@ -7,7 +7,7 @@ const Section = ({ children }) => {
   const [isToggled, setIsToggled] = useToggle(false)
 
   return (
-    <section class='section'>
+    <section className='section'>
       {children}
       <p>is toggled: {isToggled.toString()}</p>
       <button onClick={setIsToggled}>Toggle</button>

@@ -17,7 +17,10 @@
     "build": "webpack --config build-utils/webpack.config.js --env.env=prod",
     "build:analyze": "yarn build --env.addon=bundleanalyze --env.addon=bundlevisualizer",
     "build:stats": "webpack --config build-utils/webpack.config.js --env.env=prod --profile --json > stats.json",
-    "svgr": "svgr -d src/Icons/ assets/"
+    "svgr": "svgr -d src/Icons/ assets/",
+    "serve:firefox": "browser-sync start --server --files 'dist/**/*.css, dist/**/*.html, dist/**/*.js, !node_modules/**/*, !src/**/*' --directory --port 7777 --browser 'Firefox Developer Edition'",
+    "serve": "browser-sync start --server 'dist' --files 'dist/**/*.css, dist/**/*.html, dist/**/*.js, !node_modules/**/*, !src/**/*' --directory --port 7777 --browser 'Google Chrome'",
+    "serve:built": "concurrently \"yarn:build\" \"yarn:serve\""
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -42,7 +45,7 @@
     "@testing-library/jest-dom": "^5.7.0",
     "@testing-library/react": "^10.0.4",
     "@testing-library/user-event": "^10.1.2",
-    "autoprefixer": "^9.7.6",
+    "autoprefixer": "^10.2.6",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-lodash": "^3.3.4",
@@ -84,9 +87,10 @@
     "mkdirp": "^1.0.4",
     "node-sass": "^4.13.1",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "postcss": "^8.3.0",
     "postcss-extend": "^1.0.5",
     "postcss-import": "^12.0.1",
-    "postcss-loader": "^3.0.0",
+    "postcss-loader": "^4.0.3",
     "postcss-nested": "^4.2.1",
     "postcss-nested-ancestors": "^2.0.0",
     "postcss-nested-props": "^2.0.0",
@@ -106,14 +110,15 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^4.2.2",
-    "webpack-visualizer-plugin": "^0.1.11"
+    "webpack-visualizer-plugin": "^0.1.11",
+    "workbox-webpack-plugin": "^5.1.3"
   },
   "dependencies": {
     "@loadable/component": "^5.12.0",
     "date-fns": "^2.12.0",
     "lodash-es": "^4.17.15",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "tailwindcss": "^1.4.6"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "tailwindcss": "^2.2.4"
   }
 }
