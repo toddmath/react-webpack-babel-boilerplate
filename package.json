@@ -87,7 +87,7 @@
     "mkdirp": "^1.0.4",
     "node-sass": "^7.0.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
-    "postcss": "^8.3.0",
+    "postcss": "^8.4.31",
     "postcss-extend": "^1.0.5",
     "postcss-import": "^12.0.1",
     "postcss-loader": "^4.0.3",
